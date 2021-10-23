@@ -1,0 +1,5 @@
+if(EXISTS "/home/siyer/docs/projects/ongoing/corelink/circular_buffer/build/circular_buffer_test_tests-b12d07c.cmake")
+  include("/home/siyer/docs/projects/ongoing/corelink/circular_buffer/build/circular_buffer_test_tests-b12d07c.cmake")
+else()
+  add_test(circular_buffer_test_NOT_BUILT-b12d07c circular_buffer_test_NOT_BUILT-b12d07c)
+endif()
