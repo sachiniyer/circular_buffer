@@ -108,28 +108,30 @@ namespace circular_buffer {
       delete [] array_;
     }
 
-    circular_buffer(const circular_buffer& o) {
-      array_size_ = o.array_size_;
-      head_ = o.head_;
-      tail_ = o.tail_;
-      item_amount_ = o.item_amount_;
-      for (size_t i = 0; i < array_size_; i++) {
-        array_[i] = o.array_[i];
+    circular_buffer(const circular_buffer& o) :
+      array_size_(o.array_size_),
+      head_(o.head_), tail_(o.tail_),
+      item_amount_(o.item_amount_), array_(new T[o.array_size_]) {
+      for (size_t i = 0; i < o.array_size_; i++) {
+	array_[i] = o.array_[i];
       }
     }
 
     circular_buffer& operator=(const circular_buffer& o) {
-      if (this != o) {
-        delete [] array_;
-        array_size_ = o.array_size_;
+      if (this != &o) {
         head_ = o.head_;
         tail_ = o.tail_;
         item_amount_ = o.item_amount_;
-        array_ = new T(array_size_);
+	if (array_size_ != o.array_size_) {
+	  delete[] array_;
+	  array_size_ = o.array_size_;
+	  array_ = new T(array_size_);
+	}
 	for (size_t i = 0; i < array_size_; i++) {
 	  array_[i] = o.array_[i];
 	}
       }
+      return *this;
     }
 
   private:
@@ -140,5 +142,8 @@ namespace circular_buffer {
     size_t item_amount_;
   };
 
+  class circular_buffer_iterator {
+
+  };
 
 }

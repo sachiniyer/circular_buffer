@@ -75,3 +75,24 @@ TEST_CASE("test9") {
   testbuffer.push_back(10);
   REQUIRE(testbuffer[0] == 10);
 }
+
+TEST_CASE("test10") {
+  circular_buffer::circular_buffer<int> testbuffer;
+  testbuffer.push_back(10);
+  circular_buffer::circular_buffer<int> testbuffer2(50);
+  testbuffer2 = testbuffer;
+  REQUIRE(testbuffer2.front() == 10);
+}
+
+TEST_CASE("test11") {
+  circular_buffer::circular_buffer<int> testbuffer;
+  testbuffer.push_back(10);
+  circular_buffer::circular_buffer<int> testbuffer2(testbuffer);
+  REQUIRE(testbuffer2.front() == 10);
+}
+
+TEST_CASE("test12") {
+  circular_buffer::circular_buffer<int>* testbuffer
+    = new circular_buffer::circular_buffer<int>(20);
+  REQUIRE(true);
+}
