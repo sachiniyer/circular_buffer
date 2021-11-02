@@ -1,13 +1,14 @@
 // test/test.cpp
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include <circular_buffer.hpp>
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
 
 TEST_CASE("test1") {
-    std::string value = circular_buffer::hi();
-    REQUIRE(value == std::string("hello"));
+  REQUIRE(0 == 0);
 }
 
 TEST_CASE("test2") {
@@ -95,4 +96,23 @@ TEST_CASE("test12") {
   circular_buffer::circular_buffer<int>* testbuffer
     = new circular_buffer::circular_buffer<int>(20);
   REQUIRE(true);
+}
+
+TEST_CASE("test13") {
+  int amount = 1000000;
+  circular_buffer::circular_buffer<int> testbuffer(amount);
+  std::srand(std::time(nullptr));
+  int test[amount];
+  int randnum = 0;
+  for (int i = 0; i < amount; i++) {
+    randnum = std::rand();
+    test[i] = randnum;
+    testbuffer.push_back(randnum);
+  }
+  bool okay = true;
+  for (int i = 0; i < amount; i++) {
+    okay = testbuffer.front() == test[i];
+    testbuffer.pop_front();
+  }
+  REQUIRE(okay);
 }

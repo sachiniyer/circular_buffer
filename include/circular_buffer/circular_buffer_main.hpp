@@ -1,88 +1,77 @@
 #pragma once
 
-#include <string>
+#include <vector>
 namespace circular_buffer {
-  inline auto hi() -> std::string {
-    return "hello";
-  }
-
   template <class T>
   class circular_buffer {
   public:
-    explicit circular_buffer(size_t capacity = 100)
-      : array_(new T[capacity]),
-        array_size_(capacity),
-        head_(0), tail_(0),
-        item_amount_(0) {}
+    explicit circular_buffer(std::size_t given_capacity = 100)
+      : buff(given_capacity, 0), elements(0), head(0), tail(0) {}
 
-    size_t size() const {
-      return item_amount_;
+    std::size_t size() const {
+      return elements;
     }
 
-    size_t capacity() const {
-      return array_size_;
-    }
-
-    size_t max_size() const {
-      return sizeof(T);
+    std::size_t capacity() const {
+      return buff.size();
     }
 
     bool empty() const {
-      return item_amount_ == 0;
+      return elements == 0;
     }
 
     T& front() {
-      return array_[head_];
+      return buff[head];
     }
 
     T& back() {
-      return array_[tail_];
+      return buff[tail];
     }
 
     void clear() {
-      head_ = 0;
-      tail_ = 0;
-      item_amount_ = 0;
+      head = 0;
+      tail = 0;
+      elements = 0;
     }
 
     const T& front() const {
-      return array_[head_];
+      return buff[head];
     }
 
     const T& back() const {
-      return array_[tail_];
+      return buff[tail];
     }
 
     void increment_tail() {
-      tail_++;
-      item_amount_++;
-      if (tail_ == array_size_)
-        tail_ = 0;
+      tail++;
+      elements++;
+      if (tail == buff.size())
+        tail = 0;
     }
 
     void increment_head() {
       if (!this->empty()) {
-        head_++;
-        item_amount_--;
-        if (head_ == array_size_)
-          head_ = 0;
+        head++;
+	elements--;
+        if (head == buff.size())
+          head = 0;
       }
     }
 
     void push_back(const T &item) {
-      if (item_amount_ == 0) {
-        array_[head_] = item;
-        tail_ = head_;
-        item_amount_++;
+      if (elements == 0) {
+        buff[head] = item;
+        tail = head;
+	elements++;
       }
-      else if (item_amount_ < array_size_) {
+      else if (elements < buff.size()) {
         increment_tail();
-        array_[tail_] = item;
+        buff[tail] = item;
       }
       else {
         increment_head();
         increment_tail();
-        array_[tail_] = item;
+        buff[tail] = item;
       }
     }
 
@@ -90,60 +79,46 @@ namespace circular_buffer {
       increment_head();
     }
 
-    T& operator[](size_t ref) {
-      if (ref <= item_amount_) {
-        return(array_[ref]);
+    T& operator[](std::size_t ref) {
+      if (ref < buff.size()) {
+        return(buff[ref]);
       }
       throw std::out_of_range ("out of range");
     }
 
-    T operator[] (size_t ref) const  {
-      if (ref <= item_amount_) {
-        return(array_[ref]);
+    const T& operator[] (std::size_t ref) const  {
+      if (ref < buff.size()) {
+        return(buff[ref]);
       }
       throw std::out_of_range ("out of range");
-    }
-
-    ~circular_buffer() {
-      delete [] array_;
     }
 
     circular_buffer(const circular_buffer& o) :
-      array_size_(o.array_size_),
-      head_(o.head_), tail_(o.tail_),
-      item_amount_(o.item_amount_), array_(new T[o.array_size_]) {
-      for (size_t i = 0; i < o.array_size_; i++) {
-	array_[i] = o.array_[i];
+      elements(o.elements),
+      head(o.head), tail(o.tail) {
+
+	for (std::size_t i = 0; i < o.buff.size(); i++) {
+	  buff.emplace_back(o.buff[i]);
       }
     }
 
     circular_buffer& operator=(const circular_buffer& o) {
       if (this != &o) {
-        head_ = o.head_;
-        tail_ = o.tail_;
-        item_amount_ = o.item_amount_;
-	if (array_size_ != o.array_size_) {
-	  delete[] array_;
-	  array_size_ = o.array_size_;
-	  array_ = new T(array_size_);
-	}
-	for (size_t i = 0; i < array_size_; i++) {
-	  array_[i] = o.array_[i];
+        head = o.head;
+        tail = o.tail;
+        elements = o.elements;
+	buff.clear();
+	for (std::size_t i = 0; i < o.buff.size(); i++) {
+	  buff.emplace_back(o.buff[i]);
 	}
       }
       return *this;
     }
 
   private:
-    T* array_;
-    size_t array_size_;
-    size_t head_;
-    size_t tail_;
-    size_t item_amount_;
+    std::vector<T> buff;
+    std::size_t elements;
+    std::size_t head;
+    std::size_t tail;
   };
-
-  class circular_buffer_iterator {
-
-  };
-
 }
