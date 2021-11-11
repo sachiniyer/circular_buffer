@@ -6,4 +6,5 @@ Currently this is a work in progress, but the core functionality is there. I dev
 
 ## TODO
  * Implement Iterator properly
- * Add more test cases
+ * Add more test cases (especially with delete callback)
+ * Add documentation
