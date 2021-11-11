@@ -5,8 +5,12 @@ namespace circular_buffer {
   template <class T>
   class circular_buffer {
   public:
-    explicit circular_buffer(std::size_t given_capacity = 100)
-      : buff(given_capacity, 0), elements(0), head(0), tail(0) {}
+    static void default_callback(T) {}
+
+    explicit circular_buffer(std::size_t given_capacity = 100,
+			     void(* given_callback)(T) = default_callback)
+      : buff(given_capacity), elements(0), head(0), tail(0), del_callback(given_callback) {
+    }
 
     std::size_t size() const {
       return elements;
@@ -69,6 +73,7 @@ namespace circular_buffer {
         buff[tail] = item;
       }
       else {
+	del_callback(this->front());
         increment_head();
         increment_tail();
         buff[tail] = item;
@@ -120,5 +125,6 @@ namespace circular_buffer {
     std::size_t elements;
     std::size_t head;
     std::size_t tail;
+    void (* del_callback)(T);
   };
 }

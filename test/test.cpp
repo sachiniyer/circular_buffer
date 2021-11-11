@@ -116,3 +116,18 @@ TEST_CASE("test13") {
   }
   REQUIRE(okay);
 }
+bool entered = false;
+void del(int* thing) {
+  entered = true;
+  delete thing;
+}
+TEST_CASE("test14") {
+  int amount = 5;
+  circular_buffer::circular_buffer<int*> testbuffer(amount, del);
+  for (int i = 0; i < 10; i++) {
+    testbuffer.push_back(new int(i));
+  }
+
+  REQUIRE(entered == true);
+
+}
