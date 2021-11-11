@@ -100,7 +100,7 @@ namespace circular_buffer {
 
     circular_buffer(const circular_buffer& o) :
       elements(o.elements),
-      head(o.head), tail(o.tail) {
+      head(o.head), tail(o.tail), del_callback(o.del_callback){
 
 	for (std::size_t i = 0; i < o.buff.size(); i++) {
 	  buff.emplace_back(o.buff[i]);
@@ -112,6 +112,7 @@ namespace circular_buffer {
         head = o.head;
         tail = o.tail;
         elements = o.elements;
+	del_callback = o.del_callback;
 	buff.clear();
 	for (std::size_t i = 0; i < o.buff.size(); i++) {
 	  buff.emplace_back(o.buff[i]);
